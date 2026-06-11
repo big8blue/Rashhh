@@ -344,11 +344,11 @@ def generate_docx(forecast_df, monthly_df, forecast_months_labels):
         if idx == 0:
             ax.legend(fontsize=6, loc='upper left')
     plt.tight_layout()
-    chart_path = 'output/top20_forecast.png'
-    os.makedirs('output', exist_ok=True)
-    fig.savefig(chart_path, dpi=150, bbox_inches='tight')
+    chart_buf = BytesIO()
+    fig.savefig(chart_buf, dpi=150, bbox_inches='tight', format='png')
     plt.close()
-    doc.add_picture(chart_path, width=Inches(6.5))
+    chart_buf.seek(0)
+    doc.add_picture(chart_buf, width=Inches(6.5))
     last_row = doc.add_paragraph()
     run = last_row.add_run('\nCharts show: Historical sales (blue), forecast (red), 95% confidence interval (shaded), buyer norm (green dashed).')
     run.font.size = Pt(8)
@@ -380,8 +380,6 @@ def generate_docx(forecast_df, monthly_df, forecast_months_labels):
                 for run in p.runs:
                     run.font.size = Pt(7)
     doc.add_paragraph('\n\n--- End of Report ---')
-    if os.path.exists(chart_path):
-        os.remove(chart_path)
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
