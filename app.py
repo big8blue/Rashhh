@@ -345,6 +345,7 @@ def generate_docx(forecast_df, monthly_df, forecast_months_labels):
             ax.legend(fontsize=6, loc='upper left')
     plt.tight_layout()
     chart_path = 'output/top20_forecast.png'
+    os.makedirs('output', exist_ok=True)
     fig.savefig(chart_path, dpi=150, bbox_inches='tight')
     plt.close()
     doc.add_picture(chart_path, width=Inches(6.5))
